@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SUPERVECTAR VLC</title>
+  <title>SUPERVECTAR VLC 2</title>
   <style>
     body {
       font-family: system-ui, sans-serif;
@@ -29,11 +29,42 @@
     h1 .main-logo { height: 1em; width: auto; }
     h2 { font-size: 1.3rem; margin-top: 2rem; margin-bottom: 0.8rem; color: #FFD700; }
 
-    .search-box { text-align: center; margin-bottom: 20px; }
+    .search-box { text-align: center; margin-bottom: 10px; }
     .search-box input {
       width: 90%; max-width: 500px; padding: 10px;
       border-radius: 8px; border: none; outline: none;
       background: #222; color: #eee; font-size: 1rem;
+    }
+
+    /* Botones de categorías */
+    .category-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .category-buttons button {
+      background: #222;
+      color: #FFD700;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 8px 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: bold;
+    }
+
+    .category-buttons button:hover {
+      background: #FFD700;
+      color: #000;
+    }
+
+    .category-buttons button.active {
+      background: #FFD700;
+      color: #000;
+      border-color: #FFD700;
     }
 
     .category-grid { display: flex; flex-direction: column; gap: 10px; }
@@ -49,7 +80,11 @@
       padding: 5px 10px;
       transition: transform 0.2s;
     }
-    .card:hover { transform: scale(1.02); }
+
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 10px #ffd70044;
+    }
 
     .card img {
       width: 60px;
@@ -75,7 +110,6 @@
 
     .no-results { text-align: center; color: #888; margin-top: 20px; }
 
-    /* Estilo del toast */
     #toast {
       visibility: hidden;
       min-width: 180px;
@@ -112,7 +146,7 @@
   <div id="notice">
     ⚠️ Para reproducir los canales es necesario tener instalado el reproductor VLC:
     <a href="https://play.google.com/store/apps/details?id=org.videolan.vlc&hl=es" target="_blank">Descargar VLC Android</a>.
-    <a href="https://apps.apple.com/es/app/vlc-media-player/id650377962" target="_blank">Descargar VLC IOS</a>.
+    <a href="https://apps.apple.com/es/app/vlc-media-player/id650377962" target="_blank">Descargar VLC iOS</a>.
     <a href="https://images.videolan.org/vlc/download-windows.html" target="_blank">Descargar VLC Windows</a>.	
   </div>
 
@@ -120,10 +154,11 @@
     <input type="text" id="search" placeholder="🔍 Buscar canal..." />
   </div>
 
+  <div id="category-buttons" class="category-buttons"></div>
+
   <div id="container"></div>
   <div class="no-results" style="display:none;">No se encontraron canales 😕</div>
 
-  <!-- Toast de notificación -->
   <div id="toast"></div>
 
   <script>
@@ -203,7 +238,9 @@
       window.location.href = uri;
     }
 
-    function openDirect(url) { window.open(url, '_blank', 'noopener'); }
+    function openDirect(url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
 
     function copyToClipboard(text) {
       navigator.clipboard.writeText(text)
@@ -237,7 +274,7 @@
         card.setAttribute('data-nombre', ch.nombre.toLowerCase());
 
         card.innerHTML = `
-          <img src="${ch.logo}" alt="logo">
+          <img src="${ch.logo}" alt="logo de ${ch.nombre}">
           <strong>${ch.nombre}</strong>
           <div class="actions">
             <button class="btn-android">📱 Android</button>
@@ -262,6 +299,57 @@
       });
     });
 
+    // === BOTONES DE CATEGORÍAS ===
+    const categoryButtonsContainer = document.getElementById('category-buttons');
+
+    // Crear botones según las categorías existentes
+    categorias.forEach((cat, index) => {
+      const btn = document.createElement('button');
+      btn.textContent = cat.nombre;
+      btn.setAttribute('data-category', index);
+      categoryButtonsContainer.appendChild(btn);
+    });
+
+    function filterByCategory(categoryIndex) {
+      const allCategories = container.querySelectorAll('h2, .category-grid');
+      let catCount = 0;
+      allCategories.forEach((el) => {
+        if (el.tagName === 'H2') {
+          const grid = el.nextElementSibling;
+          if (catCount === Number(categoryIndex)) {
+            el.style.display = '';
+            grid.style.display = '';
+          } else {
+            el.style.display = 'none';
+            grid.style.display = 'none';
+          }
+          catCount++;
+        }
+      });
+      document.querySelectorAll('.category-buttons button').forEach(b => b.classList.remove('active'));
+      const activeButton = document.querySelector(`.category-buttons button[data-category="${categoryIndex}"]`);
+      if (activeButton) activeButton.classList.add('active');
+    }
+
+    document.querySelectorAll('.category-buttons button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const index = btn.getAttribute('data-category');
+        filterByCategory(index);
+      });
+    });
+
+    const allButton = document.createElement('button');
+    allButton.textContent = "📺 Todos";
+    allButton.classList.add('active');
+    categoryButtonsContainer.prepend(allButton);
+
+    allButton.addEventListener('click', () => {
+      document.querySelectorAll('h2, .category-grid').forEach(el => el.style.display = '');
+      document.querySelectorAll('.category-buttons button').forEach(b => b.classList.remove('active'));
+      allButton.classList.add('active');
+    });
+
+    // === BUSCADOR ===
     const searchInput = document.getElementById('search');
     const noResults = document.querySelector('.no-results');
 
