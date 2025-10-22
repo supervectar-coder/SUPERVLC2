@@ -107,6 +107,11 @@
     .btn-ios { background: #2196F3; color: #fff; }
     .btn-direct { background: #777; color: #fff; }
     .btn-copy { background: #FFD700; color: #000; }
+	
+	 .btn-direct {
+      display: none !important;
+    }
+
 
     .no-results { text-align: center; color: #888; margin-top: 20px; }
 
@@ -339,7 +344,7 @@
     });
 
     const allButton = document.createElement('button');
-    allButton.textContent = "📺 Todos";
+    allButton.textContent = "Todos";
     allButton.classList.add('active');
     categoryButtonsContainer.prepend(allButton);
 
