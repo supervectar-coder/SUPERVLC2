@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SUPERVECTAR VLC 2</title>
+  <title>SUPERVECTAR VLC TV</title>
   <style>
     body {
       font-family: system-ui, sans-serif;
@@ -36,7 +36,6 @@
       background: #222; color: #eee; font-size: 1rem;
     }
 
-    /* Botones de categorías */
     .category-buttons {
       display: flex;
       flex-wrap: wrap;
@@ -105,13 +104,7 @@
     }
     .btn-android { background: #4CAF50; color: #fff; }
     .btn-ios { background: #2196F3; color: #fff; }
-    .btn-direct { background: #777; color: #fff; }
     .btn-copy { background: #FFD700; color: #000; }
-	
-	 .btn-direct {
-      display: none !important;
-    }
-
 
     .no-results { text-align: center; color: #888; margin-top: 20px; }
 
@@ -145,13 +138,13 @@
 <body>
   <h1>
     <img src="https://i.ibb.co/FnGwW1c/Logo.png" alt="Logo" class="main-logo">
-    SUPERVECTAR VLC 2
+    SUPERVECTAR VLC TV
   </h1>
 
   <div id="notice">
     ⚠️ Para reproducir los canales es necesario tener instalado el reproductor VLC:
-    <a href="https://play.google.com/store/apps/details?id=org.videolan.vlc&hl=es" target="_blank">Descargar VLC Android</a>.
-    <a href="https://apps.apple.com/es/app/vlc-media-player/id650377962" target="_blank">Descargar VLC iOS</a>.
+    <a href="https://play.google.com/store/apps/details?id=org.videolan.vlc&hl=es" target="_blank">Descargar VLC Android</a>,
+    <a href="https://apps.apple.com/es/app/vlc-media-player/id650377962" target="_blank">Descargar VLC iOS</a>,
     <a href="https://images.videolan.org/vlc/download-windows.html" target="_blank">Descargar VLC Windows</a>.	
   </div>
 
@@ -160,72 +153,159 @@
   </div>
 
   <div id="category-buttons" class="category-buttons"></div>
-
   <div id="container"></div>
   <div class="no-results" style="display:none;">No se encontraron canales 😕</div>
-
   <div id="toast"></div>
 
   <script>
-    const categorias = [
-      {
-        nombre: "CINE Y SERIES",
-        canales: [
-          { nombre: "Movistar+ Plus FHD (ELCANO)", url: "http://vlc.shickat.me:8000/pid/1ab443f5b4beb6d586f19e8b25b9f9646cf2ab78/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Movistar_Plus%2B_2022_logo.svg" },
-          { nombre: "Movistar+ Plus FHD (NEW ERA) ", url: "http://vlc.shickat.me:8000/pid/199190e3f28c1de0be34bccf0d3568dc65209b99/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Movistar_Plus%2B_2022_logo.svg" },
-          { nombre: "Movistar+ Plus FHD (NEW ERA VI)", url: "http://vlc.shickat.me:8000/pid/b6ffbbc72a5b6b579faf79ebac229af7a25b933b/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Movistar_Plus%2B_2022_logo.svg" },
-          { nombre: "Movistar+ Plus FHD (NEW ERA VI)", url: "http://vlc.shickat.me:8000/pid/5866e83279307bf919068ae7a0d250e4e424e464/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Movistar_Plus%2B_2022_logo.svg" },		
-          { nombre: "M+ Originales", url: "http://vlc.shickat.me:8000/pid/096b817fcc836535f608facb15fca6408fae3162/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/b/bd/Originales_por_Movistar_Plus%2B_2023_Logo.svg" },		  
-          { nombre: "M+ Estrenos", url: "http://vlc.shickat.me:8000/pid/5d35f906b735f25164fa2b9b7a4e6ef91dfed131/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/5/59/Estrenos_por_Movistar_Plus%2B_2025_Logo.svg" },
-          { nombre: "M+ Hits", url: "http://vlc.shickat.me:8000/pid/50553edb5e8c54d15e0d43161369b3b4cef95065/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/2/29/Hits_por_Movistar_Plus%2B_2025_Logo.svg" },		  
-          { nombre: "M+ Acción", url: "http://vlc.shickat.me:8000/pid/089673779de9fa7a18ac8dc26eb4a79cf5a86f96/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/e/ea/Acci%C3%B3n_por_Movistar_Plus%2B_2023_Logo.svg" },
-          { nombre: "M+ Acción", url: "http://vlc.shickat.me:8000/pid/102bcb79ca391e37ac1fc9ee77dc53440d0a59ce/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/e/ea/Acci%C3%B3n_por_Movistar_Plus%2B_2023_Logo.svg" },		  
-          { nombre: "M+ Comedia", url: "http://vlc.shickat.me:8000/pid/cf0cb321eed6765c2eadbd9983570f6674ce5df6/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/6/69/Comedia_por_Movistar_Plus%2B_2023_Logo.svg" },		  
-          { nombre: "M+ Drama", url: "http://vlc.shickat.me:8000/pid/a6de6a4977d7801bbddc9c7739d822f4beb358ae/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/6/62/Drama_por_Movistar_Plus%2B_2023_Logo.svg" },		  
-          { nombre: "M+ Cine Español", url: "http://vlc.shickat.me:8000/pid/e4bce95dd4faeb9cb09ade36a0636bc4b22b691c/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/2/24/Cine_Espa%C3%B1ol_por_Movistar_Plus%2B_2023_Logo.svg" },
-          { nombre: "M+ Clásicos", url: "http://vlc.shickat.me:8000/pid/6462c8f65fcaa6e4fc874fef8d1e45bb7a7e6bae/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/d/dd/Cl%C3%A1sicos_por_Movistar_Plus%2B_2023_Logo.svg" },
-          { nombre: "M+ Indie", url: "http://vlc.shickat.me:8000/pid/7716c9fd5bd4413715e4e26f97efb91802f6ee80/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/6/61/Indie_por_Movistar_Plus%2B_2023_Logo.svg" },
-          { nombre: "M+ Terror", url: "http://vlc.shickat.me:8000/pid/cf99e99c105162410ec6d1f68cc6f4811560fee7/stream.mp4", logo: "https://www.movistarplus.es/recorte/m-NEO/canal/TERROR.png" },
-          { nombre: "M+ Romance", url: "http://vlc.shickat.me:8000/pid/4bfeb0516c44c4f0e3502e3f1ca1035d39ddf9c2/stream.mp4", logo: "https://www.movistarplus.es/recorte/m-NEO/canal/MROMA.png" },
-          { nombre: "Dark", url: "http://vlc.shickat.me:8000/pid/25465ea2deba65c623b7659136abf6fcc9f5dc20/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Dark_Teuve_2.png" },
-          { nombre: "Syfy", url: "http://vlc.shickat.me:8000/pid/8e1bbcb6a6b8b9bb0e1144454fda35531107cdb3/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/b/be/SYFY.svg" },
-          { nombre: "Amc", url: "http://vlc.shickat.me:8000/pid/55ff9ee631af351f365f51cf3601695bf1fd20f3/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/3/34/AMC_logo_2019.svg" },
-          { nombre: "Xtrm", url: "http://vlc.shickat.me:8000/pid/d7d3830018cfd93c7430c19ba703a053680476a0/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/6/60/XTRM_Espa%C3%B1a.png" }		  
-        ]
-      },
-      {
-       nombre: "DOCUMENTALES Y MAS",
-        canales: [
-          { nombre: "Movistar Documentales", url: "http://vlc.shickat.me:8000/pid/b3fc9b5647c5933b101c0b6b64322590c68587b9/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/d/d2/Documentales_por_Movistar_Plus%2B_2023_Logo.svg" },	  
-          { nombre: "Discovery", url: "http://vlc.shickat.me:8000/pid/670519ffe8db1e20d0c753d4f756c009e71173d8/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/f/f1/2019_Discovery_logo.svg" },	  
-          { nombre: "Caza y pesca", url: "http://vlc.shickat.me:8000/pid/8b9e46eb3a9b4ef23b7d3d86c73a0851580f8caa/stream.mp4", logo: "https://www.movistarplus.es/recorte/m-DPBLAN/guiamovil/CAZPES.png" },	  
-          { nombre: "Caza y pesca", url: "http://vlc.shickat.me:8000/pid/277a6fb47189db801c5b7b05ad89c690571f3e9c/stream.mp4", logo: "https://www.movistarplus.es/recorte/m-DPBLAN/guiamovil/CAZPES.png" },	  
-          { nombre: "Onetoro", url: "http://vlc.shickat.me:8000/pid/cd0188292b6b3876ff66c99bd3d25eab88b41079/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/f/f0/Toros-movistar.png" },	  
-          { nombre: "Onetoro", url: "http://vlc.shickat.me:8000/pid/877eceeaf9f3bd9b392359323d03d0ac3bb27312/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/f/f0/Toros-movistar.png" },	  
-          { nombre: "Torole", url: "http://vlc.shickat.me:8000/pid/56457cde219abe22cdc3f6c2083a37b0324b3b0c/stream.mp4", logo: "https://toroletv.com/wp-content/uploads/2025/03/torole_logotipo_blanco.png" },	  
-          { nombre: "Canal cocina", url: "http://vlc.shickat.me:8000/pid/96f092e1fa99062f6da14cae230b877ad3ed849b/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1f/Canal_Cocina.svg" }	  
-        ]
-      },
-      {	  
-        nombre: "TDT ESPAÑA",
-        canales: [
-          { nombre: "La 1", url: "http://vlc.shickat.me:8000/pid/dad5e0e0825cb3e410008f1c4252387b868e740c/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Logo_La_1.svg" },
-          { nombre: "La 1", url: "http://vlc.shickat.me:8000/pid/7597d4feb3195079ffa606cf23a183d626ee40ba/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Logo_La_1.svg" },
-          { nombre: "La 1", url: "http://vlc.shickat.me:8000/pid/6a54f8fb00406c88f68ac3f3aabc7d084f9573d0/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Logo_La_1.svg" },
-          { nombre: "La 2", url: "http://vlc.shickat.me:8000/pid/9934906503661142f97a044ae1509a294057c2ed/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_La_2.svg" },
-          { nombre: "Antena 3", url: "http://vlc.shickat.me:8000/pid/f9d2a6d5da8d1f2423a0b6ed0047636a728040e9/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/6/65/Antena_3_2025_%28sin_wordmark%29.svg" },
-          { nombre: "Cuatro", url: "http://vlc.shickat.me:8000/pid/8d66979e705a8b532b9243bbc0862c0f1c734ef0/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/c/ce/Cuatro.svg" },
-          { nombre: "Cuatro", url: "http://vlc.shickat.me:8000/pid/8670df538a11c6ec97b3f634981ddc4409ca0333/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/c/ce/Cuatro.svg" },
-          { nombre: "Telecinco", url: "http://vlc.shickat.me:8000/pid/3e7b1911a1f83fd869b6995650a3057778259ca7/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/1/13/Telecinco_2024_Logo.svg" },
-          { nombre: "Telecinco", url: "http://vlc.shickat.me:8000/pid/5133d1e8f45095f0b7dabbd78db0ce19a496f7bf/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/1/13/Telecinco_2024_Logo.svg" },
-          { nombre: "Telecinco", url: "http://vlc.shickat.me:8000/pid/3d376333ee90d6db3d413fc5764ef635882076f5/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/1/13/Telecinco_2024_Logo.svg" },
-          { nombre: "La sexta", url: "http://vlc.shickat.me:8000/pid/44828a7580cd99fcb36245c327889c47f34b457f/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/7/75/LaSexta_2024_Logo.svg" },
-          { nombre: "Be mad", url: "http://vlc.shickat.me:8000/pid/6e1b5fd8753352486aa932f802534a17556e1f60/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7d/BeMad_2022_Logo.svg" },
-          { nombre: "Ten", url: "http://vlc.shickat.me:8000/pid/19cab799c86251ae8ae5f4b4faace9b78d784abc/stream.mp4", logo: "https://upload.wikimedia.org/wikipedia/commons/f/f3/TEN_2024_Logo.svg" }
-        ]
-      }
-    ];
+    const M3U_URL = "https://raw.githubusercontent.com/supervectar-coder/listaaVLCtv/refs/heads/main/lista%20vlc.m3u";
 
+    async function loadM3U() {
+      try {
+        const res = await fetch(M3U_URL);
+        const text = await res.text();
+        parseM3U(text);
+      } catch (err) {
+        console.error("Error al cargar la lista M3U:", err);
+        document.getElementById("container").innerHTML = "<p style='color:red'>❌ Error al cargar la lista M3U.</p>";
+      }
+    }
+
+    function parseM3U(text) {
+      const lines = text.split("\n").filter(l => l.trim() !== "");
+      const canales = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (line.startsWith("#EXTINF")) {
+          const info = line;
+
+          const logoMatch = info.match(/tvg-logo="([^"]*)"/i);
+          const groupMatch = info.match(/group-title="([^"]*)"/i);
+
+          let name = "Canal sin nombre";
+          const commaIndex = info.lastIndexOf(",");
+          if (commaIndex !== -1 && commaIndex < info.length - 1) {
+            name = info.substring(commaIndex + 1).trim();
+          }
+
+          const url = lines[i + 1] || "";
+
+          canales.push({
+            nombre: name,
+            logo: logoMatch ? logoMatch[1] : "",
+            grupo: groupMatch ? groupMatch[1] : "Sin categoría",
+            url
+          });
+        }
+      }
+
+      renderCategorias(canales);
+    }
+
+    function renderCategorias(canales) {
+      const categoriasMap = {};
+      canales.forEach(c => {
+        if (!categoriasMap[c.grupo]) categoriasMap[c.grupo] = [];
+        categoriasMap[c.grupo].push(c);
+      });
+
+      const container = document.getElementById('container');
+      const categoryButtonsContainer = document.getElementById('category-buttons');
+      container.innerHTML = "";
+      categoryButtonsContainer.innerHTML = "";
+
+      const grupos = Object.keys(categoriasMap);
+
+      const allButton = document.createElement('button');
+      allButton.textContent = "Todos";
+      allButton.classList.add('active');
+      categoryButtonsContainer.appendChild(allButton);
+      allButton.addEventListener('click', () => {
+        document.querySelectorAll('h2, .category-grid').forEach(el => el.style.display = '');
+        document.querySelectorAll('.category-buttons button').forEach(b => b.classList.remove('active'));
+        allButton.classList.add('active');
+      });
+
+      grupos.forEach((grupo, index) => {
+        const btn = document.createElement('button');
+        btn.textContent = grupo;
+        btn.setAttribute('data-category', index);
+        categoryButtonsContainer.appendChild(btn);
+
+        const h2 = document.createElement('h2');
+        h2.textContent = grupo;
+        container.appendChild(h2);
+
+        const grid = document.createElement('div');
+        grid.className = 'category-grid';
+        container.appendChild(grid);
+
+        categoriasMap[grupo].forEach(ch => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.setAttribute('data-nombre', ch.nombre.toLowerCase());
+
+          const img = document.createElement('img');
+          img.src = ch.logo || "https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg";
+          img.alt = `logo de ${ch.nombre}`;
+          img.onerror = () => {
+            img.src = "https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg";
+          };
+
+          const strong = document.createElement('strong');
+          strong.textContent = ch.nombre;
+
+          const actions = document.createElement('div');
+          actions.className = 'actions';
+          actions.innerHTML = `
+            <button class="btn-android">📱 Android</button>
+            <button class="btn-ios">🍎 iOS</button>
+            <button class="btn-copy">📋 Copiar enlace</button>
+          `;
+          actions.querySelector('.btn-android').addEventListener('click', () => {
+            if (isAndroid()) openWithAndroidIntent(ch.url);
+            else alert('Solo para Android');
+          });
+          actions.querySelector('.btn-ios').addEventListener('click', () => {
+            if (isIOS()) openWithiOSVLC(ch.url);
+            else alert('Solo para iPhone/iPad');
+          });
+          actions.querySelector('.btn-copy').addEventListener('click', () => copyToClipboard(ch.url));
+
+          card.appendChild(img);
+          card.appendChild(strong);
+          card.appendChild(actions);
+
+          grid.appendChild(card);
+        });
+
+        btn.addEventListener('click', () => filterByCategory(index));
+      });
+
+      initSearch();
+    }
+
+    function filterByCategory(categoryIndex) {
+      const allCategories = document.querySelectorAll('h2, .category-grid');
+      let count = 0;
+      allCategories.forEach(el => {
+        if (el.tagName === 'H2') {
+          const grid = el.nextElementSibling;
+          if (count === Number(categoryIndex)) {
+            el.style.display = '';
+            grid.style.display = '';
+          } else {
+            el.style.display = 'none';
+            grid.style.display = 'none';
+          }
+          count++;
+        }
+      });
+      document.querySelectorAll('.category-buttons button').forEach(b => b.classList.remove('active'));
+      const activeButton = document.querySelector(`.category-buttons button[data-category="${categoryIndex}"]`);
+      if (activeButton) activeButton.classList.add('active');
+    }
 
     function isAndroid() { return /Android/i.test(navigator.userAgent); }
     function isIOS() { return /iPhone|iPad|iPod/i.test(navigator.userAgent); }
@@ -243,10 +323,6 @@
       window.location.href = uri;
     }
 
-    function openDirect(url) {
-      window.open(url, '_blank', 'noopener,noreferrer');
-    }
-
     function copyToClipboard(text) {
       navigator.clipboard.writeText(text)
         .then(() => showToast("✅ Enlace copiado"))
@@ -262,117 +338,27 @@
       }, 2000);
     }
 
-    const container = document.getElementById('container');
-
-    categorias.forEach(cat => {
-      const titulo = document.createElement('h2');
-      titulo.textContent = cat.nombre;
-      container.appendChild(titulo);
-
-      const grid = document.createElement('div');
-      grid.className = 'category-grid';
-      container.appendChild(grid);
-
-      cat.canales.forEach(ch => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.setAttribute('data-nombre', ch.nombre.toLowerCase());
-
-        card.innerHTML = `
-          <img src="${ch.logo}" alt="logo de ${ch.nombre}">
-          <strong>${ch.nombre}</strong>
-          <div class="actions">
-            <button class="btn-android">📱 Android</button>
-            <button class="btn-ios">🍎 iOS</button>
-            <button class="btn-direct">🌐 Web</button>
-            <button class="btn-copy">📋 Copiar enlace</button>
-          </div>
-        `;
-
-        card.querySelector('.btn-android').addEventListener('click', () => {
-          if (isAndroid()) openWithAndroidIntent(ch.url);
-          else alert('Solo para Android');
-        });
-        card.querySelector('.btn-ios').addEventListener('click', () => {
-          if (isIOS()) openWithiOSVLC(ch.url);
-          else alert('Solo para iPhone/iPad');
-        });
-        card.querySelector('.btn-direct').addEventListener('click', () => openDirect(ch.url));
-        card.querySelector('.btn-copy').addEventListener('click', () => copyToClipboard(ch.url));
-
-        grid.appendChild(card);
-      });
-    });
-
-    // === BOTONES DE CATEGORÍAS ===
-    const categoryButtonsContainer = document.getElementById('category-buttons');
-
-    // Crear botones según las categorías existentes
-    categorias.forEach((cat, index) => {
-      const btn = document.createElement('button');
-      btn.textContent = cat.nombre;
-      btn.setAttribute('data-category', index);
-      categoryButtonsContainer.appendChild(btn);
-    });
-
-    function filterByCategory(categoryIndex) {
-      const allCategories = container.querySelectorAll('h2, .category-grid');
-      let catCount = 0;
-      allCategories.forEach((el) => {
-        if (el.tagName === 'H2') {
-          const grid = el.nextElementSibling;
-          if (catCount === Number(categoryIndex)) {
-            el.style.display = '';
-            grid.style.display = '';
+    function initSearch() {
+      const searchInput = document.getElementById('search');
+      const noResults = document.querySelector('.no-results');
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase();
+        const cards = document.querySelectorAll('.card');
+        let visible = 0;
+        cards.forEach(card => {
+          const name = card.getAttribute('data-nombre');
+          if (name.includes(query)) {
+            card.style.display = 'flex';
+            visible++;
           } else {
-            el.style.display = 'none';
-            grid.style.display = 'none';
+            card.style.display = 'none';
           }
-          catCount++;
-        }
+        });
+        noResults.style.display = visible === 0 ? 'block' : 'none';
       });
-      document.querySelectorAll('.category-buttons button').forEach(b => b.classList.remove('active'));
-      const activeButton = document.querySelector(`.category-buttons button[data-category="${categoryIndex}"]`);
-      if (activeButton) activeButton.classList.add('active');
     }
 
-    document.querySelectorAll('.category-buttons button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const index = btn.getAttribute('data-category');
-        filterByCategory(index);
-      });
-    });
-
-    const allButton = document.createElement('button');
-    allButton.textContent = "Todos";
-    allButton.classList.add('active');
-    categoryButtonsContainer.prepend(allButton);
-
-    allButton.addEventListener('click', () => {
-      document.querySelectorAll('h2, .category-grid').forEach(el => el.style.display = '');
-      document.querySelectorAll('.category-buttons button').forEach(b => b.classList.remove('active'));
-      allButton.classList.add('active');
-    });
-
-    // === BUSCADOR ===
-    const searchInput = document.getElementById('search');
-    const noResults = document.querySelector('.no-results');
-
-    searchInput.addEventListener('input', () => {
-      const query = searchInput.value.toLowerCase();
-      const cards = document.querySelectorAll('.card');
-      let visible = 0;
-
-      cards.forEach(card => {
-        const name = card.getAttribute('data-nombre');
-        if (name.includes(query)) {
-          card.style.display = 'flex';
-          visible++;
-        } else { card.style.display = 'none'; }
-      });
-
-      noResults.style.display = visible === 0 ? 'block' : 'none';
-    });
+    loadM3U();
   </script>
 </body>
 </html>
